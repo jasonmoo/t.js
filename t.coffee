@@ -34,7 +34,7 @@ class t
         return ''
 
       if not meta
-        return @render('has_else ? if_true : inner, vars')
+        return @render(`has_else ? if_true : inner, vars`)
 
       if meta is '@'
         for i, v of val
