@@ -16,7 +16,7 @@
 	@version 0.1.0
 
 */
-(function() {
+(function(undefined) {
 
 	var blockregex = /\{\{(([@!]?)(.+?))\}\}(([\s\S]+?)(\{\{:\1\}\}([\s\S]+?))?)\{\{\/\1\}\}/g,
 		valregex = /\{\{([=%])(.+?)\}\}/g, s=String;
@@ -83,10 +83,10 @@
 			.replace(valregex, function(_, meta, key) {
 				var val = get_value(vars,key);
 
-				if (val) {
-					return meta == '%' ? scrub(val) : val;
+				if (val === undefined || val === null) {
+					return "";
 				}
-				return "";
+				return meta == '%' ? scrub(val) : val;
 			});
 	}
 
