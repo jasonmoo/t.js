@@ -1,3 +1,9 @@
+# t microtemplating microlibrary - coffeescript!
+# 
+# based on github.com/jasonmoo/t.js
+# MIT license
+# david@davidrekow.com
+
 class t
 
   constructor: (template) ->
