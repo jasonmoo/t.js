@@ -6,7 +6,7 @@
 <style>
 	body { background:black; color:white; padding:40px; font-family: 'PT Sans', Helvetica, Arial, sans-serif;}
 	a { color:#9bf; }
-	p > span { display:inline-block; margin-right:10px; font-weight:bold; }
+	p > span { display:inline-block; margin:0 10px; font-weight:bold; }
 </style>
 </head>
 <body>
@@ -17,7 +17,7 @@
 
 <script src="t.min.js"></script>
 <script type="t/template" id="test">
-	
+
 	<h1>{{=greeting}}</h1>
 	<h2>{{=user.display_name}}</h2>
 
@@ -57,11 +57,19 @@
 
 	{{/@user.prefs}}
 
+	<h4>Test Values</h4>
+	{{@test_values}}
+
+		<p>{{=_key}}<span id="{{=_key}}">{{=_val}}</span></p>
+
+	{{/@test_values}}
+
+
 </script>
 <script>
 
 	console.log(document.getElementById('test').innerHTML);
-	
+
 	test("t.js tests", function() {
 
 		var div = document.createElement('div');
@@ -80,8 +88,16 @@
 					Notifications: "Yes!",
 					"Stay logged in": "No"
 				}
+			},
+			test_values: {
+				"true": true,
+				"false": false,
+				"zero": 0,
+				"string_zero": "0",
+				"null": null
 			}
 		});
+		document.body.appendChild(div);
 		console.log(div.innerHTML);
 
 		ok(/<h1>Welcome!<\/h1>/.test(div.innerHTML), "Simple interpolation.");
@@ -94,7 +110,13 @@
 		equal(div.innerHTML.match(/>(?:Kunal|Francisco|Nick)</g).length, 3, "Array iteration.")
 		equal(div.innerHTML.match(/>(?:Notifications|Yes!|Stay logged in|No)</g).length, 4, "Object key/val iteration.")
 
-		document.body.appendChild(div);
+		// passing true as a value is a little not-sane but we'll print it for you
+		equal(document.getElementById("true").innerHTML, "true", "Prints boolean true");
+		equal(document.getElementById("zero").innerHTML, "0", "Prints zero");
+		equal(document.getElementById("string_zero").innerHTML, "0", "Prints the string 0");
+		equal(document.getElementById("false").innerHTML, "", "Does not print boolean false");
+		equal(document.getElementById("null").innerHTML, "", "Does not print null");
+
 
 	});
 

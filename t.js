@@ -1,12 +1,12 @@
 /*
-		 _     _     
-		| |   (_)    
-		| |_   _ ___ 
+		 _     _
+		| |   (_)
+		| |_   _ ___
 		| __| | / __|
 		| |_ _| \__ \
 		 \__(_) |___/
-		     _/ |    
-		    |__/     
+		     _/ |
+		    |__/
 
 	t.js
 	a micro-templating framework in ~400 bytes gzipped
@@ -43,7 +43,7 @@
 	function render(fragment, vars) {
 		return fragment
 			.replace(blockregex, function(_, __, meta, key, inner, if_true, has_else, if_false) {
-				
+
 				var val = get_value(vars,key), temp = "", i;
 
 				if (!val) {
@@ -64,7 +64,7 @@
 				if (!meta) {
 					return render(has_else ? if_true : inner, vars);
 				}
-				
+
 				// process array/obj iteration
 				if (meta == '@' && val) {
 					for (i in val) {
@@ -83,7 +83,7 @@
 			.replace(valregex, function(_, meta, key) {
 				var val = get_value(vars,key);
 
-				if (val) {
+				if (val || val === 0) {
 					return meta == '%' ? scrub(val) : val;
 				}
 				return "";
