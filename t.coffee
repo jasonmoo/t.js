@@ -3,7 +3,7 @@ class t
   constructor: (template) ->
 
     @scrub = (val) =>
-      return new Option(val).innerHTML
+      return new Option(val).innerHTML.replace(/"/g, '&quot;')
 
     @get_value = (vars, key) =>
       parts = key.split('.')
@@ -36,7 +36,7 @@ class t
       if not meta
         return @render('has_else ? if_true : inner, vars')
 
-      if meta is '@' and val
+      if meta is '@'
         for i, v of val
           if {}.hasOwnProperty.call(val, i)
             vars._key = i
@@ -48,7 +48,7 @@ class t
         return temp
     ).replace(valregex, (_, meta, key) =>
       val = @get_value(vars, key)
-      (return if meta is '%' then scrub(val) else val) if val
+      (return if meta is '%' then scrub(val) else val) if val?
       return ''
     )
 
