@@ -19,7 +19,7 @@
 (function() {
 
 	var blockregex = /\{\{(([@!]?)(.+?))\}\}(([\s\S]+?)(\{\{:\1\}\}([\s\S]+?))?)\{\{\/\1\}\}/g,
-		valregex = /\{\{([=%])(.+?)\}\}/g, s=String;
+		valregex = /\{\{([=%])(.+?)\}\}/g;
 
 	function t(template) {
 		this.t = template;
@@ -66,7 +66,7 @@
 				}
 
 				// process array/obj iteration
-				if (meta == '@' && val) {
+				if (meta == '@') {
 					for (i in val) {
 						if (val.hasOwnProperty(i)) {
 							vars._key = i;
