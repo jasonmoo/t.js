@@ -26,7 +26,7 @@
 	}
 
 	function scrub(val) {
-		return new Option(val).innerHTML;
+		return new Option(val).innerHTML.replace(/"/g,"&quot;");
 	}
 
 	function get_value(vars, key) {

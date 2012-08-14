@@ -60,7 +60,7 @@
 	<h4>Test Values</h4>
 	{{@test_values}}
 
-		<p>{{=_key}}<span id="{{=_key}}">{{=_val}}</span></p>
+		<p>{{=_key}}<span id="{{=_key}}" data-val="{{%_val}}">{{=_val}}</span></p>
 
 	{{/@test_values}}
 
@@ -117,6 +117,7 @@
 		equal(document.getElementById("false").innerHTML, "", "Does not print boolean false");
 		equal(document.getElementById("null").innerHTML, "", "Does not print null");
 
+		equal((new t("{{%quot}}")).render({quot: '"'}), "&quot;", "Escapes quotes properly")
 
 	});
 
