@@ -37,7 +37,7 @@
 			}
 			vars = vars[parts.shift()];
 		}
-		return vars;
+		return typeof(vars) === 'function' : vars() : vars;
 	}
 
 	function render(fragment, vars) {
