@@ -19,10 +19,10 @@
 	var template = new t("<div>Hello {{=name}}</div>");
 	document.body.innerHtml = template.render({name: "World!"});
 
-For more advanced usage check the [`t_test.html`](http://www.github.com/jasonmoo/t_test.html).
+For more advanced usage check the [`t_test.html`](https://github.com/jasonmoo/t.js/blob/master/t_test.html).
 
 This software is released under the MIT license.
 
 ___
 
-Coffeescript version maintained by @davidrekow at [https://github.com/davidrekow/t.coffee]()
+[Coffeescript version](https://github.com/davidrekow/t.coffee) maintained by [@davidrekow](https://github.com/davidrekow)
