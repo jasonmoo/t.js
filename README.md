@@ -13,12 +13,16 @@
  * Multi-line templates (no removal of newlines required to render)
  * Render the same template multiple times with different data
  * Works in all modern browsers
- 
+
 ### How to use
 
 	var template = new t("<div>Hello {{=name}}</div>");
 	document.body.innerHtml = template.render({name: "World!"});
-	
-For more advanced usage check the `t_test.html`.
 
-This software is released under the MIT license.  
+For more advanced usage check the [`t_test.html`](http://www.github.com/jasonmoo/t_test.html).
+
+This software is released under the MIT license.
+
+___
+
+Coffeescript version maintained by @davidrekow at [https://github.com/davidrekow/t.coffee]()
