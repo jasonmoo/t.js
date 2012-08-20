@@ -62,7 +62,7 @@
 
 				// regular if
 				if (!meta) {
-					return render(has_else ? if_true : inner, vars);
+					return render(if_true, vars);
 				}
 
 				// process array/obj iteration
