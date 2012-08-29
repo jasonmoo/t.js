@@ -19,7 +19,7 @@
 (function() {
 
 	var blockregex = /\{\{(([@!]?)(.+?))\}\}(([\s\S]+?)(\{\{:\1\}\}([\s\S]+?))?)\{\{\/\1\}\}/g,
-		valregex = /\{\{([=%])(.+?)\}\}/g;
+		valregex = /\{\{([=%#])(.+?)\}\}/g;
 
 	function t(template) {
 		this.t = template;
@@ -81,6 +81,24 @@
 
 			})
 			.replace(valregex, function(_, meta, key) {
+				if (meta=='#') {
+					var fn=key.split('|');
+				    key=fn[0];
+				    var	val=get_value(vars,key);
+					if (fn.length>1){
+					    var	methods=fn[1].split(',');
+					    var j=methods.length;
+					    var i=0;
+						while(i<j){
+							if (t.hasOwnProperty(methods[i])) {
+								val=t[methods[i++]](val);
+
+							};
+						};
+					}
+					return val;
+				};
+
 				var val = get_value(vars,key);
 
 				if (val || val === 0) {
@@ -90,9 +108,23 @@
 			});
 	}
 
+
 	t.prototype.render = function (vars) {
 		return render(this.t, vars);
 	};
+	
+	t.prototype.register = function(fname, fn) {
+        if(t.hasOwnProperty(fname)) {
+            return false;
+        }
+        return t[fname]=fn;
+    };
+
+    t.prototype.unregister = function(fname) {
+        if(t.hasOwnProperty(fname)) {
+            return delete t[fname];
+        }
+    };
 
 	window.t = t;
 
