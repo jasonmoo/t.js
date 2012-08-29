@@ -22,7 +22,7 @@
 
 ### How Function works
 
-    var template = new t("<div>{{=name}}</div>");
+    var template = new t("<div>{{#name|hello,world}}</div>");
     template.register("hello",function(data){return data+" Hello";})
     template.register("world",function(data){return data+" world!";})
     document.body.innerHtml = template.render({name: "Icy!"});
