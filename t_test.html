@@ -15,7 +15,7 @@
 <script src="http://code.jquery.com/qunit/qunit-1.9.0.js"></script>
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-1.9.0.css">
 
-<script src="t.min.js"></script>
+<script src="t.js"></script>
 <script type="t/template" id="test">
 
 	<h1>{{=greeting}}</h1>
@@ -64,7 +64,7 @@
 
 	{{/@test_values}}
 
-
+	{{#greeting|hello,world}}
 </script>
 <script>
 
@@ -74,6 +74,10 @@
 
 		var div = document.createElement('div');
 		var template = new t(document.getElementById('test').innerHTML);
+
+		template.register("hello",function(data){return data+" Hello";})
+		template.register("world",function(data){return data+" world!";})
+
 		div.innerHTML = template.render({
 			greeting: "Welcome!",
 			user: {
@@ -97,6 +101,7 @@
 				"null": null
 			}
 		});
+
 		document.body.appendChild(div);
 		console.log(div.innerHTML);
 
@@ -109,6 +114,7 @@
 		ok(/<address>111 State St, Ithaca,&lt;script&gt;alert\(1\);&lt;\/script&gt; NY 14853<\/address>/.test(div.innerHTML), "Scrubbed interpolation.");
 		equal(div.innerHTML.match(/>(?:Kunal|Francisco|Nick)</g).length, 3, "Array iteration.")
 		equal(div.innerHTML.match(/>(?:Notifications|Yes!|Stay logged in|No)</g).length, 4, "Object key/val iteration.")
+		ok(/Welcome! Hello world!/.test(div.innerHTML), "Function test.");
 
 		// passing true as a value is a little not-sane but we'll print it for you
 		equal(document.getElementById("true").innerHTML, "true", "Prints boolean true");

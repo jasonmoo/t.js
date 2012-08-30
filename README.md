@@ -10,6 +10,7 @@
  * If/else blocks: `{{value}} <<markup>> {{:value}} <<alternate markup>> {{/value}}`
  * If not blocks: `{{!value}} <<markup>> {{/!value}}`
  * Object/Array iteration: `{{@object_value}} {{=_key}}:{{=_val}} {{/@object_value}}`
+ * Function Support: `{{#value|func,func2}}`
  * Multi-line templates (no removal of newlines required to render)
  * Render the same template multiple times with different data
  * Works in all modern browsers
@@ -18,6 +19,15 @@
 
 	var template = new t("<div>Hello {{=name}}</div>");
 	document.body.innerHtml = template.render({name: "World!"});
+
+### How Function works
+
+    var template = new t("<div>{{#name|hello,world}}</div>");
+    template.register("hello",function(data){return data+" Hello";})
+    template.register("world",function(data){return data+" world!";})
+    document.body.innerHtml = template.render({name: "Icy!"});
+
+    //return Icy! Hello world!
 
 For more advanced usage check the [`t_test.html`](https://github.com/jasonmoo/t.js/blob/master/t_test.html).
 
