@@ -32,7 +32,7 @@
 	function get_value(vars, key) {
 		var parts = key.split('.');
 		while (parts.length) {
-			if (!(parts[0] in vars)) {
+			if (!vars.hasOwnProperty(parts[0])) {
 				return false;
 			}
 			vars = vars[parts.shift()];
@@ -49,7 +49,7 @@
 				if (!val) {
 
 					// handle if not
-					if (meta == '!') {
+					if (meta === '!') {
 						return render(inner, vars);
 					}
 					// check for else
@@ -66,7 +66,7 @@
 				}
 
 				// process array/obj iteration
-				if (meta == '@') {
+				if (meta === '@') {
 					for (i in val) {
 						if (val.hasOwnProperty(i)) {
 							vars._key = i;
@@ -84,7 +84,7 @@
 				var val = get_value(vars,key);
 
 				if (val || val === 0) {
-					return meta == '%' ? scrub(val) : val;
+					return meta === '%' ? scrub(val) : val;
 				}
 				return "";
 			});
@@ -96,4 +96,4 @@
 
 	window.t = t;
 
-})();
+}());
