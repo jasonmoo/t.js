@@ -67,6 +67,10 @@
 
 				// process array/obj iteration
 				if (meta == '@') {
+					// store any previous vars
+					// reuse existing vars
+					_ = vars._key;
+					__ = vars._val;
 					for (i in val) {
 						if (val.hasOwnProperty(i)) {
 							vars._key = i;
@@ -74,8 +78,8 @@
 							temp += render(inner, vars);
 						}
 					}
-					delete vars._key;
-					delete vars._val;
+					vars._key = _;
+					vars._val = __;
 					return temp;
 				}
 
