@@ -26,3 +26,5 @@ This software is released under the MIT license.
 ___
 
 [Coffeescript version](https://github.com/davidrekow/t.coffee) maintained by [@davidrekow](https://github.com/davidrekow)
+
+[PHP version](https://github.com/ramon82/t.php) maintained by [@ramon82](https://github.com/ramon82)
