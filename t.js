@@ -99,8 +99,8 @@
 	};
 
 	//AMD, CommonJs, then globals
-  if (typeof window.define === 'function' && window.define.amd) {
-    window.define([], function(){
+  if (typeof define === 'function' && define.amd) {
+    define([], function() {
       return t;
     });
   } else if (typeof exports === 'object') {
