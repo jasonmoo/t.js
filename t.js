@@ -98,6 +98,14 @@
 		return render(this.t, vars);
 	};
 
-	window.t = t;
-
-})();
+	//AMD, CommonJs, then globals
+  if (typeof window.define === 'function' && window.define.amd) {
+    window.define([], function(){
+      return t;
+    });
+  } else if (typeof exports === 'object') {
+    module.exports = t;
+  } else {
+    window.t = window.t || t;
+  }
+}());
