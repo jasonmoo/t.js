@@ -26,7 +26,7 @@
 	}
 
 	function scrub(val) {
-		return new Option(val).innerHTML.replace(/"/g,"&quot;");
+		return new Option(val).text.replace(/"/g,"&quot;");
 	}
 
 	function get_value(vars, key) {
@@ -98,6 +98,14 @@
 		return render(this.t, vars);
 	};
 
-	window.t = t;
-
-})();
+	//AMD, CommonJs, then globals
+  if (typeof define === 'function' && define.amd) {
+    define([], function() {
+      return t;
+    });
+  } else if (typeof exports === 'object') {
+    module.exports = t;
+  } else {
+    window.t = window.t || t;
+  }
+}());
