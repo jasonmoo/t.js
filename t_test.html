@@ -21,6 +21,18 @@
 	<h1>{{=greeting}}</h1>
 	<h2>{{=user.display_name}}</h2>
 
+	{{user.display_name=='Jason'}}
+		<p>display_name equal Jason </p>
+	{{/user.display_name=='Jason'}}
+	
+	{{'Jason'==user.display_name}}
+		<p>Jason equal  display_name</p>
+	{{/'Jason'==user.display_name}}
+	
+	{{'David'!=user.display_name}}
+		<p>David not equal  display_name</p>
+	{{/'David'!=user.display_name}}
+
 	{{user.address}}
 		<address>{{%user.address}}</address>
 	{{/user.address}}

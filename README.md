@@ -8,6 +8,7 @@
  * Scrubbed interpolation: `{{%unsafe_value}}`
  * Name-spaced variables: `{{=User.address.city}}`
  * If/else blocks: `{{value}} <<markup>> {{:value}} <<alternate markup>> {{/value}}`
+ * If/else blocks: `{{value=='x'}} <<markup>> {{:value=='x'}} <<alternate markup>> {{/value=='x'}}`    ( === == > < >= <= != )
  * If not blocks: `{{!value}} <<markup>> {{/!value}}`
  * Object/Array iteration: `{{@object_value}} {{=_key}}:{{=_val}} {{/@object_value}}`
  * Multi-line templates (no removal of newlines required to render)

@@ -19,7 +19,8 @@
 (function() {
 
 	var blockregex = /\{\{(([@!]?)(.+?))\}\}(([\s\S]+?)(\{\{:\1\}\}([\s\S]+?))?)\{\{\/\1\}\}/g,
-		valregex = /\{\{([=%])(.+?)\}\}/g;
+		valregex = /\{\{([=%])(.+?)\}\}/g,
+		conregex = /([^=><]+?)([!=>< ]+)(.+)$/;
 
 	function t(template) {
 		this.t = template;
@@ -39,6 +40,21 @@
 		}
 		return vars;
 	}
+	
+	function get_value_con(vars, key){
+		var v = null;
+		if(key.charAt(0) == "'" || key.charAt(0) == '"'){
+			v = key.substr(1);
+			if(v.charAt(v.length - 1) == "'" || v.charAt(v.length - 1) == '"') {
+				v = v.substr(0,v.length -1);
+			}
+		}else if(!isNaN(key.charAt(0))){
+			v = Number(key);
+		}else{
+			v = get_value(vars, key);
+		}
+		return v;
+	}
 
 	function render(fragment, vars) {
 		return fragment
@@ -51,6 +67,42 @@
 					// handle if not
 					if (meta == '!') {
 						return render(inner, vars);
+					}else{
+						var consp = conregex.exec(key);
+						if(consp){
+							var l = get_value_con(vars,consp[1]);
+							var r = get_value_con(vars,consp[3]);
+							var op = consp[2].replace(/\s/g,'');
+							var conV = false;
+							switch(op){ //do not use the eval(), it is not safe
+								case '==':
+									conV = (l == r);
+									break;
+								case '===':
+									conV = (l === r);
+									break;
+								case '>':
+									conV = (l > r);
+									break;
+								case '<':
+									conV = (l < r);
+									break;
+								case '>=':
+									conV = (l >= r);
+									break;
+								case '<=':
+									conV = (l <= r);
+								case '!=':
+									conV = (l != r);
+									break;
+							}
+							
+							if(conV){
+								return render(inner, vars);
+							}else{
+								//not support	
+							}
+						}
 					}
 					// check for else
 					if (has_else) {
