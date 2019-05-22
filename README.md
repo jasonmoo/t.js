@@ -17,7 +17,7 @@
 ### How to use
 
 	var template = new t("<div>Hello {{=name}}</div>");
-	document.body.innerHtml = template.render({name: "World!"});
+	document.body.innerHTML = template.render({name: "World!"});
 
 For more advanced usage check the [`t_test.html`](https://github.com/jasonmoo/t.js/blob/master/t_test.html).
 
