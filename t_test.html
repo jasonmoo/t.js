@@ -15,7 +15,7 @@
 <script src="http://code.jquery.com/qunit/qunit-1.9.0.js"></script>
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-1.9.0.css">
 
-<script src="t.min.js"></script>
+<script src="t.js"></script>
 <script type="t/template" id="test">
 
 	<h1>{{=greeting}}</h1>
@@ -64,7 +64,17 @@
 
 	{{/@test_values}}
 
-
+	<ul id="nested_loops">{{@nested_loops}}
+		<li>{{=_key}}
+			<ul>{{@_val year}}
+				<li>{{=_key}}
+					<ul>{{@_val month}}
+						<li>{{=_val}}</li>
+					{{/@_val month}}</ul>
+				</li>
+			{{/@_val year}}</ul>
+		</li>
+	{{/@nested_loops}}</ul>
 </script>
 <script>
 
@@ -95,7 +105,17 @@
 				"zero": 0,
 				"string_zero": "0",
 				"null": null
-			}
+			},
+			nested_loops:  {
+				'2016': { 
+					'03': [111, 112, 113], 
+					'12': [121, 122, 123]
+				},
+				'2018': {
+					'05': [211, 212, 213], 
+					'09': [221, 222, 223] 
+				},
+			},
 		});
 		document.body.appendChild(div);
 		console.log(div.innerHTML);
@@ -118,6 +138,12 @@
 		equal(document.getElementById("null").innerHTML, "", "Does not print null");
 
 		equal((new t("{{%quot}}")).render({quot: '"'}), "&quot;", "Escapes quotes properly")
+		equal(
+			document.getElementById('nested_loops').innerHTML.replaceAll(/\s/g,''),
+			`<li>2016<ul><li>12<ul><li>121</li><li>122</li><li>123</li></ul></li><li>03<ul><li>111</li><li>112</li><li>113</li></ul></li></ul></li><li>2018<ul><li>05<ul><li>211</li><li>212</li><li>213</li></ul></li><li>09<ul><li>221</li><li>222</li><li>223</li></ul></li></ul></li>`,
+			"Handles nested loops properly"
+			);
+
 
 	});
 
