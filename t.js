@@ -19,10 +19,11 @@
 (function() {
 
 	var blockregex = /\{\{(([@!]?)(.+?))\}\}(([\s\S]+?)(\{\{:\1\}\}([\s\S]+?))?)\{\{\/\1\}\}/g,
-		valregex = /\{\{([=%])(.+?)\}\}/g;
+		valregex = /\{\{([=%])([\.\w]+?)\s*(\|\s*([\w,]+))?\s*\}\}/g;
 
-	function t(template) {
+	function t(template, formatters) {
 		this.t = template;
+		this.f = formatters || {};
 	}
 
 	function scrub(val) {
@@ -40,7 +41,7 @@
 		return vars;
 	}
 
-	function render(fragment, vars) {
+	function render(fragment, vars, formatters) {
 		return fragment
 			.replace(blockregex, function(_, __, meta, key, inner, if_true, has_else, if_false) {
 
@@ -50,11 +51,11 @@
 
 					// handle if not
 					if (meta == '!') {
-						return render(inner, vars);
+						return render(inner, vars, formatters);
 					}
 					// check for else
 					if (has_else) {
-						return render(if_false, vars);
+						return render(if_false, vars, formatters);
 					}
 
 					return "";
@@ -62,7 +63,7 @@
 
 				// regular if
 				if (!meta) {
-					return render(if_true, vars);
+					return render(if_true, vars, formatters);
 				}
 
 				// process array/obj iteration
@@ -75,7 +76,7 @@
 						if (val.hasOwnProperty(i)) {
 							vars._key = i;
 							vars._val = val[i];
-							temp += render(inner, vars);
+							temp += render(inner, vars, formatters);
 						}
 					}
 					vars._key = _;
@@ -84,8 +85,15 @@
 				}
 
 			})
-			.replace(valregex, function(_, meta, key) {
-				var val = get_value(vars,key);
+			.replace(valregex, function (_, meta, key, __, fns = '') {
+				const val = fns
+					.split(',')
+					.reduce(
+						function (val, fn) {
+							return typeof formatters[fn] == 'function' ? formatters[fn](val) : val
+						},
+						get_value(vars, key)
+					);
 
 				if (val || val === 0) {
 					return meta == '%' ? scrub(val) : val;
@@ -95,7 +103,7 @@
 	}
 
 	t.prototype.render = function (vars) {
-		return render(this.t, vars);
+		return render(this.t, vars, this.f);
 	};
 
 	window.t = t;
