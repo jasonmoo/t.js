@@ -15,7 +15,7 @@
 <script src="http://code.jquery.com/qunit/qunit-1.9.0.js"></script>
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-1.9.0.css">
 
-<script src="t.min.js"></script>
+<script src="t.js"></script>
 <script type="t/template" id="test">
 
 	<h1>{{=greeting}}</h1>
@@ -64,6 +64,8 @@
 
 	{{/@test_values}}
 
+	<p id="DMY-date">{{=YMD_date|YMD2DMY}}</p>
+
 
 </script>
 <script>
@@ -73,7 +75,14 @@
 	test("t.js tests", function() {
 
 		var div = document.createElement('div');
-		var template = new t(document.getElementById('test').innerHTML);
+		var template = new t(
+			document.getElementById('test').innerHTML, 
+			{
+				YMD2DMY: function (d) {
+					return d.split('-').reverse().join('/')
+				}
+			}
+		);
 		div.innerHTML = template.render({
 			greeting: "Welcome!",
 			user: {
@@ -95,10 +104,73 @@
 				"zero": 0,
 				"string_zero": "0",
 				"null": null
-			}
+			},
+			YMD_date: '2023-10-16'
 		});
 		document.body.appendChild(div);
 		console.log(div.innerHTML);
+		
+		// example showing a formatter to recursively render a tree-like object of varying depth.
+		var div1 = document.createElement('div');
+
+		// The rendering function will become the formatter:
+		function render1(obj) {
+			return template1.render(obj)
+		}
+		var template1 = new t(`
+			{{@entries}}
+				<li>{{=_val.item}}
+					{{_val.entries}}
+						<ul>{{=_val | loop}}</ul>
+					{{:_val.entries}}
+						: {{=_val.value}}
+					{{/_val.entries}}
+				</li>
+			{{/@entries}}`,
+			{
+				// The formatter is the rendering function itself.
+				loop: render1
+			}
+		);
+		div1.innerHTML = render1({entries:
+			[
+				{
+					item: 'a',
+					entries: [
+						{
+							item: 'a-1',
+							entries: [
+								{
+									item: 'a-1-1',
+									value: 'A-One_One'
+								},
+								{
+									item: 'a-1-2',
+									entries: [
+										{
+											item: 'a-1-2-1',
+											value: 'A-One-Two-One'
+										}
+									]
+								}
+							]
+						},
+						{
+							item: 'a-1',
+							value: 'A-One'
+						}
+
+					] 
+				},
+				{
+					item: 'b',
+					value: 'B'
+				}
+			]
+			});
+
+		document.body.appendChild(div1);
+		console.log(div1.innerHTML);
 
 		ok(/<h1>Welcome!<\/h1>/.test(div.innerHTML), "Simple interpolation.");
 		ok(/<h2>Jason<\/h2>/.test(div.innerHTML), "Name-spaced interpolation.");
@@ -118,7 +190,13 @@
 		equal(document.getElementById("null").innerHTML, "", "Does not print null");
 
 		equal((new t("{{%quot}}")).render({quot: '"'}), "&quot;", "Escapes quotes properly")
+		equal(document.getElementById("DMY-date").innerHTML, "16/10/2023","Formatter")
 
+		equal(
+			div1.innerHTML.replaceAll(/\s/g,''),
+			'<li>a<ul><li>a-1<ul><li>a-1-1:A-One_One</li><li>a-1-2<ul><li>a-1-2-1:A-One-Two-One</li></ul></li></ul></li><li>a-1:A-One</li></ul></li><li>b:B</li>',
+			"Loop via formatter"
+		);
 	});
 
 
