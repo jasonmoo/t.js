@@ -30,14 +30,12 @@
 	}
 
 	function get_value(vars, key) {
-		var parts = key.split('.');
-		while (parts.length) {
-			if (!(parts[0] in vars)) {
-				return false;
-			}
-			vars = vars[parts.shift()];
-		}
-		return vars;
+		return key
+    .split('.')
+    .reduce(
+      (out, part) => (out instanceof Map ? out.get(part) : out[part]) ?? false,
+      vars
+    );
 	}
 
 	function render(fragment, vars) {
@@ -67,22 +65,18 @@
 
 				// process array/obj iteration
 				if (meta == '@') {
-					// store any previous vars
-					// reuse existing vars
-					_ = vars._key;
-					__ = vars._val;
-					for (i in val) {
-						if (val.hasOwnProperty(i)) {
-							vars._key = i;
-							vars._val = val[i];
-							temp += render(inner, vars);
-						}
-					}
-					vars._key = _;
-					vars._val = __;
-					return temp;
-				}
-
+          return Array.from(
+						!!val?.[Symbol.iterator] ? val.entries() : Object.entries(val), 
+						([_key, _val]) => render(
+              inner,
+              {
+                ...vars,
+                _key,
+                _val,
+              }
+            )
+          ).join('');
+				}	
 			})
 			.replace(valregex, function(_, meta, key) {
 				var val = get_value(vars,key);

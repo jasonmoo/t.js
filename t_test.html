@@ -15,7 +15,7 @@
 <script src="http://code.jquery.com/qunit/qunit-1.9.0.js"></script>
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-1.9.0.css">
 
-<script src="t.min.js"></script>
+<script src="t.js"></script>
 <script type="t/template" id="test">
 
 	<h1>{{=greeting}}</h1>
@@ -63,8 +63,11 @@
 		<p>{{=_key}}<span id="{{=_key}}" data-val="{{%_val}}">{{=_val}}</span></p>
 
 	{{/@test_values}}
-
-
+	<ul id="map">
+	{{@map}}
+		<li>{{=_key}}: {{=_val}}</li>
+	{{/@map}}
+	</ul>
 </script>
 <script>
 
@@ -95,7 +98,12 @@
 				"zero": 0,
 				"string_zero": "0",
 				"null": null
-			}
+			},
+			map: new Map([
+				[1,'One'],
+				[2,'Two'],
+				[3, 'Three']
+			])
 		});
 		document.body.appendChild(div);
 		console.log(div.innerHTML);
@@ -117,6 +125,7 @@
 		equal(document.getElementById("false").innerHTML, "", "Does not print boolean false");
 		equal(document.getElementById("null").innerHTML, "", "Does not print null");
 
+		equal(document.getElementById("map").innerHTML.replaceAll(/\s/g,''),"<li>1:One</li><li>2:Two</li><li>3:Three</li>", "Doesn't loop through Maps" )
 		equal((new t("{{%quot}}")).render({quot: '"'}), "&quot;", "Escapes quotes properly")
 
 	});
